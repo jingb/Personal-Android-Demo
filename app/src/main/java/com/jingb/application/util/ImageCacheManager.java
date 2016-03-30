@@ -49,7 +49,8 @@ public class ImageCacheManager {
     }
 
 
-    public static ImageLoader.ImageListener getImageListener(final ImageView imageView, final Drawable defaultImageDrawable, final Drawable errorImageDrawable) {
+    public static ImageLoader.ImageListener getImageListener(final ImageView imageView,
+             final Drawable defaultImageDrawable, final Drawable errorImageDrawable) {
         return new ImageLoader.ImageListener() {
 
             @Override
@@ -66,7 +67,7 @@ public class ImageCacheManager {
                         );
                         transitionDrawable.setCrossFadeEnabled(true);
                         imageView.setImageDrawable(transitionDrawable);
-                        transitionDrawable.startTransition(100);
+                        transitionDrawable.startTransition(50);
                     } else {
                         imageView.setImageBitmap(response.getBitmap());
                     }

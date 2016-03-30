@@ -21,6 +21,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
+        android:background="#c9c9c9"
         android:scaleType="centerCrop"/>
 
 </LinearLayout>

@@ -17,18 +17,11 @@
         />
 
     <Button
-        android:id="@+id/btnFragmentDemo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="launch fragment demo"
-        android:layout_below="@id/showTheDpiOfYourScreen"/>
-
-    <Button
         android:id="@+id/newsListFragmentDemo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="newsListFragmentDemo"
-        android:layout_below="@id/btnFragmentDemo"/>
+        android:layout_below="@id/showTheDpiOfYourScreen"/>
 
     <Button
         android:id="@+id/foldableLayoutDemo"

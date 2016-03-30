@@ -1,8 +1,13 @@
 package com.jingb.application.ninegag.imageload;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.AbsListView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,9 +29,10 @@ public class ImageLoadMainActivity extends Activity {
 
     NineGagImageDatagram[] mImagesArray;
     ListView mListView;
+    ImageDatagramAdapter mAdapter;
 
     RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
-            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 4, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,29 @@ public class ImageLoadMainActivity extends Activity {
 
         mListView = (ListView) findViewById(R.id.listview_of_imageload_main);
         getImages();
+
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // 当不滚动时
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    //判断是否滚动到底部
+                    if (view.getLastVisiblePosition() == view.getCount() - 1) {
+                        mAdapter.notifyDataSetChanged();
+                        Toast.makeText(ImageLoadMainActivity.this,
+                            "touch the bottom", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+
+            }
+        });
+
     }
 
     public void getImages() {
@@ -58,7 +87,8 @@ public class ImageLoadMainActivity extends Activity {
     }
 
     private void setAdapter() {
-        mListView.setAdapter(new ImageDatagramAdapter(this, R.layout.imageload_listview_item, mImagesArray));
+        mAdapter = new ImageDatagramAdapter(this, R.layout.imageload_listview_item, mImagesArray);
+        mListView.setAdapter(mAdapter);
     }
 
 }

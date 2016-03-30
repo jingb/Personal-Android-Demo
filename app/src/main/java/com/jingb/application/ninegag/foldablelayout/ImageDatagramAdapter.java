@@ -2,6 +2,8 @@ package com.jingb.application.ninegag.foldablelayout;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -19,6 +21,9 @@ import com.jingb.application.ninegag.NineGagImageDatagram;
 import com.jingb.application.util.DensityUtils;
 import com.jingb.application.util.ImageCacheManager;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by jingb on 16/3/19.
  */
@@ -26,7 +31,7 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
 
     protected int viewId;
 
-    RequestQueue mQueue;
+    protected RequestQueue mQueue;
 
     protected Resources mResource;
 
@@ -41,27 +46,52 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        NineGagImageDatagram imageDatagram = getItem(position);
-        View view = LayoutInflater.from(getContext()).inflate(viewId, null);
+        View view;
+        Holder holder;
+        if (convertView == null) {
+            view = LayoutInflater.from(getContext()).inflate(viewId, null);
+            holder = getHolder(view);
 
-//        ImageView imageView = (ImageView) view.findViewById(R.id.imageItem);
-        ImageView imageView = (ImageView) view.findViewById(R.id.imageItemOfImageLoad);
+            final Drawable defaultImageDrawable = mResource.getDrawable(R.drawable.loading);
+            final Drawable errorImageDrawable = mResource.getDrawable(R.drawable.loading_error);
 
-        final Drawable defaultImageDrawable = new ColorDrawable(mResource.getColor(R.color.holo_red_light));
-        final Drawable errorImageDrawable = new ColorDrawable(mResource.getColor(R.color.holo_green_light));
+            NineGagImageDatagram imageDatagram = getItem(position);
+            ImageCacheManager.init(getContext());
+            ImageLoader.ImageListener listener = ImageCacheManager.getImageListener(
+                    holder.image, defaultImageDrawable, errorImageDrawable);
+            ImageLoader.ImageContainer image = ImageCacheManager.loadImage(imageDatagram.getImages().getLarge(), listener,
+                    0, DensityUtils.dip2px(getContext(), MAX_HEIGHT), ImageView.ScaleType.CENTER_CROP);
+            holder.image.setImageBitmap(image.getBitmap());
+            holder.caption.setText(imageDatagram.getCaption());
 
-        ImageCacheManager.init(getContext());
-        ImageLoader.ImageListener listener = ImageCacheManager.getImageListener(
-                imageView, defaultImageDrawable, errorImageDrawable);
-        ImageLoader.ImageContainer image = ImageCacheManager.loadImage(imageDatagram.getImages().getLarge(), listener,
-                0, DensityUtils.dip2px(getContext(), MAX_HEIGHT), ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageBitmap(image.getBitmap());
-
-//        TextView textView = (TextView) view.findViewById(R.id.imageCaption);
-        TextView textView = (TextView) view.findViewById(R.id.imageCaptionOfImageLoad);
-        textView.setText(imageDatagram.getCaption());
+        } else {
+            view = convertView;
+        }
 
         return view;
+    }
+
+    private Holder getHolder(final View view) {
+        Holder holder = (Holder) view.getTag();
+        if (holder == null) {
+            holder = new Holder(view);
+            view.setTag(holder);
+        }
+        return holder;
+    }
+
+    static class Holder {
+        @Bind(R.id.imageItemOfImageLoad)
+        ImageView image;
+
+        @Bind(R.id.imageCaptionOfImageLoad)
+        TextView caption;
+
+        public ImageLoader.ImageContainer imageRequest;
+
+        public Holder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 
 }

@@ -29,4 +29,5 @@ dependencies {
     compile 'com.alexvasilkov:foldable-layout:1.2.0'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.google.code.gson:gson:2.5'
+    compile 'in.srain.cube:ultra-ptr:1.0.11'
 }
