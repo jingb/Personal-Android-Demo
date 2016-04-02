@@ -10,6 +10,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.jingb.application.Jingb;
 import com.jingb.application.R;
 import com.jingb.application.ninegag.NineGagDatagram;
 import com.jingb.application.ninegag.NineGagImageDatagram;
@@ -51,7 +52,7 @@ public class FoldableMainActivity extends Activity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(FoldableMainActivity.this, "fail", Toast.LENGTH_SHORT).show();
-                Log.e("error", "get data fail");
+                Log.e(Jingb.TAG, "get data fail");
             }
         });
         requestQueue.add(request);

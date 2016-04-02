@@ -1,5 +1,16 @@
 package com.jingb.application.ninegag;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.BaseAdapter;
+import android.widget.Toast;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.jingb.application.util.GsonRequest;
+
 /**
  * Created by jingb on 16/3/19.
  */
@@ -32,4 +43,5 @@ public class NineGagImageDatagram {
     public void setImages(NineGagImageUrls images) {
         this.images = images;
     }
+
 }
