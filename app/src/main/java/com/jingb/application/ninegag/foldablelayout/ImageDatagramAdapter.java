@@ -32,8 +32,6 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
 
     protected int viewId;
 
-    protected RequestQueue mQueue;
-
     protected Resources mResource;
 
     protected static final float MAX_HEIGHT = 200f;
@@ -46,18 +44,16 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
     public ImageDatagramAdapter(Context context, int resource, List<NineGagImageDatagram> imageDatagrams) {
         super(context, resource, imageDatagrams);
         this.viewId = resource;
-        mQueue = Volley.newRequestQueue(getContext());
         mResource = getContext().getResources();
         mDefaultImageDrawable = mResource.getDrawable(R.drawable.loading);
         mErrorImageDrawable = mResource.getDrawable(R.drawable.loading_error);
-        ImageCacheManager.init(getContext());
         mImageDatagrams = imageDatagrams;
+        ImageCacheManager.init(getContext());
     }
 
     public ImageDatagramAdapter(Context context, int resource, NineGagImageDatagram[] imageDatagrams) {
         super(context, resource, imageDatagrams);
         this.viewId = resource;
-        mQueue = Volley.newRequestQueue(getContext());
         mResource = getContext().getResources();
     }
 
@@ -82,14 +78,14 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
             convertView = LayoutInflater.from(getContext()).inflate(viewId, null);
         }
         if (position + 1 <= mItemCount) {
-            requestCount++;
-            Log.e(Jingb.TAG, "requestCount: " + requestCount);
+//            requestCount++;
+//            Log.e(Jingb.TAG, "requestCount: " + requestCount);
 
             Holder holder = getHolder(convertView);
             NineGagImageDatagram imageDatagram = getItem(position);
             ImageLoader.ImageListener listener = ImageCacheManager.getImageListener(
                     holder.image, mDefaultImageDrawable, mErrorImageDrawable);
-            ImageLoader.ImageContainer image = ImageCacheManager.loadImage(imageDatagram.getImages().getSmall(), listener,
+            ImageLoader.ImageContainer image = ImageCacheManager.loadImage(imageDatagram.getImages().getLarge(), listener,
                     0, DensityUtils.dip2px(getContext(), MAX_HEIGHT), ImageView.ScaleType.CENTER_CROP);
             holder.image.setImageBitmap(image.getBitmap());
             holder.caption.setText(imageDatagram.getCaption());

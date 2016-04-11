@@ -5,4 +5,7 @@ package com.jingb.application;
  */
 public class Jingb {
     public static final String TAG = "jingb";
+    public static final int FAIL = -1;
+    public static final int SUCCESS = 0;
+
 }

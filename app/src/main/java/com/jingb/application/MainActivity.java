@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,6 +13,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.jingb.application.ninegag.foldablelayout.FoldableMainActivity;
 import com.jingb.application.newslistdemo.NewsListMainActivity;
 import com.jingb.application.ninegag.imageload.ImageLoadMainActivity;
@@ -52,7 +57,8 @@ public class MainActivity extends Activity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showTheDpiOfYourScreen();
+                        //showTheDpiOfYourScreen();
+                        req();
                     }
                 }
         );
@@ -79,6 +85,36 @@ public class MainActivity extends Activity {
                 jumpToActivity(ImageLoadMainActivity.class);
             }
         });
+
+
+    }
+
+    /**
+     * 测试volley硬盘缓存
+     */
+    public void req() {
+        String url = "http://tse1.mm.bing.net/th?id=OIP.Mb0b50663139f0e7fe6abda23e2a51afaH0&pid=15.1";
+        ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap response) {
+                Toast.makeText(MainActivity.this, "success", Toast.LENGTH_SHORT).show();
+            }
+        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
+            }
+        });
+        RequestQueue requestQueue = App.getRequestQueue();
+        Log.i(Jingb.TAG, "cache key: " + request.getCacheKey());
+        byte[] bytes = requestQueue.getCache().get(request.getCacheKey()) != null ?
+                requestQueue.getCache().get(request.getCacheKey()).data : null;
+        if (bytes != null) {
+            Toast.makeText(MainActivity.this, "get data from cache", Toast.LENGTH_SHORT).show();
+        } else {
+            requestQueue.add(request);
+            Log.e(Jingb.TAG, "requestQueue.add(request)");
+        }
     }
 
     public void jumpToActivity(Class clazz) {

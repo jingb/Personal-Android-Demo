@@ -2,6 +2,8 @@ package com.jingb.application.ninegag.imageload;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -13,13 +15,18 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.jingb.application.App;
 import com.jingb.application.Jingb;
 import com.jingb.application.R;
 import com.jingb.application.ninegag.NineGagDatagram;
 import com.jingb.application.ninegag.NineGagImageDatagram;
 import com.jingb.application.ninegag.foldablelayout.ImageDatagramAdapter;
 import com.jingb.application.util.GsonRequest;
+import com.jingb.application.util.ImageCacheManager;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,8 +52,6 @@ public class ImageLoadMainActivity extends Activity {
     PtrClassicFrameLayout mPtrFrame;
     List<NineGagImageDatagram> mDatas;
     String mNextPage = "";
-    static boolean mFirstLoad = true;
-    RequestQueue mRequestQueue;
 
     RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
             DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
@@ -58,13 +63,10 @@ public class ImageLoadMainActivity extends Activity {
 
         ButterKnife.bind(ImageLoadMainActivity.this);
 
-        Log.i(Jingb.TAG, "max memory: " + Runtime.getRuntime().maxMemory());
-
         mAdapter = new ImageDatagramAdapter(this, R.layout.imageload_listview_item, mDatas = new ArrayList<>());
         mListView.setAdapter(mAdapter);
 
-        mRequestQueue = Volley.newRequestQueue(this);
-        asynGetData(mUrl, mRequestQueue);
+        asynGetData(mUrl, App.getRequestQueue(), null);
 
         /**
          * 处理下拉刷新
@@ -75,7 +77,21 @@ public class ImageLoadMainActivity extends Activity {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
                 mDatas.clear();
-                asynGetData(mUrl, mRequestQueue);
+                asynGetData(mUrl, App.getRequestQueue(), new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        switch (msg.arg1) {
+                            case Jingb.SUCCESS:
+                                mPtrFrame.refreshComplete();
+                                break;
+                            default:
+                                mPtrFrame.refreshComplete();
+                                break;
+                        }
+                    }
+                });
+
             }
 
             @Override
@@ -88,6 +104,7 @@ public class ImageLoadMainActivity extends Activity {
             }
         });
 
+
         /****
          * 处理加载更多
          */
@@ -96,31 +113,71 @@ public class ImageLoadMainActivity extends Activity {
         // binding view and data
         loadMoreListViewContainer.setLoadMoreHandler(new LoadMoreHandler() {
             @Override
-            public void onLoadMore(LoadMoreContainer loadMoreContainer) {
-                asynGetData(mUrl + "/" + mNextPage, mRequestQueue);
+            public void onLoadMore(final LoadMoreContainer loadMoreContainer) {
+                asynGetData(mUrl + "/" + mNextPage, App.getRequestQueue(), new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        switch (msg.arg1) {
+                            case Jingb.SUCCESS:
+                                loadMoreContainer.loadMoreFinish(false, true);
+                                break;
+                            default:
+                                loadMoreContainer.loadMoreFinish(false, true);
+                                break;
+                        }
+                    }
+                });
             }
         });
     }
 
-    public void asynGetData(String url, RequestQueue requestQueue) {
-        Log.i(Jingb.TAG, "request url: " + url);
-        GsonRequest<NineGagDatagram> request = new GsonRequest<NineGagDatagram>(url,
+    public void asynGetData(String url, RequestQueue requestQueue, final Handler handler) {
+        final Message msg = handler != null ? handler.obtainMessage() : null;
+
+        GsonRequest<NineGagDatagram> request = new GsonRequest<>(url,
                 NineGagDatagram.class, new Response.Listener<NineGagDatagram>() {
             @Override
             public void onResponse(NineGagDatagram response) {
                 mDatas.addAll(Arrays.asList(response.getData()));
                 mAdapter.notifyDataSetChanged();
                 mNextPage = response.getPaging().getNext();
-                Log.i(Jingb.TAG, "next page: " + mNextPage);
+
+                if (handler != null) {
+                    msg.arg1 = Jingb.SUCCESS;
+                    handler.sendMessage(msg);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ImageLoadMainActivity.this, "fail", Toast.LENGTH_SHORT).show();
-                Log.e(Jingb.TAG, "get data fail");
+                Toast.makeText(ImageLoadMainActivity.this, "get data fail", Toast.LENGTH_SHORT).show();
+                if (handler != null) {
+                    msg.arg1 = Jingb.FAIL;
+                    handler.sendMessage(msg);
+                }
             }
         }, mRetryPolicy);
-        requestQueue.add(request);
+
+        if (ImageCacheManager.isNetworkAvailable(this)) {
+            requestQueue.add(request);
+        } else {
+            byte[] bytes = requestQueue.getCache().get(url) != null ?
+                    requestQueue.getCache().get(url).data : null;
+            if (bytes != null) {
+                try {
+                    String str = new String(bytes, "utf-8");
+                    NineGagDatagram cacheData = new Gson().fromJson(str, NineGagDatagram.class);
+                    mDatas.addAll(Arrays.asList(cacheData.getData()));
+                    mAdapter.notifyDataSetChanged();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    Log.e(Jingb.TAG, e.getMessage());
+                }
+            } else {
+                Log.e(Jingb.TAG, "eliza");
+            }
+        }
     }
 
 }
