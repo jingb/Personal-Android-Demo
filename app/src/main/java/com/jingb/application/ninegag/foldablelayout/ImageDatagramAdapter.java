@@ -87,6 +87,7 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
                     holder.image, mDefaultImageDrawable, mErrorImageDrawable);
             ImageLoader.ImageContainer image = ImageCacheManager.loadImage(imageDatagram.getImages().getLarge(), listener,
                     0, DensityUtils.dip2px(getContext(), MAX_HEIGHT), ImageView.ScaleType.CENTER_CROP);
+
             holder.image.setImageBitmap(image.getBitmap());
             holder.caption.setText(imageDatagram.getCaption());
         }

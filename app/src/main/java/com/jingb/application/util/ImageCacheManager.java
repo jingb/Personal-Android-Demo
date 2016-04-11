@@ -53,6 +53,7 @@ public class ImageCacheManager {
             ImageLoader.ImageContainer data = mImageLoader.new ImageContainer(
                     bitmap, requestUrl, null, imageListener);
             imageListener.onResponse(data, true);
+
             return data;
         }
     }
