@@ -14,7 +14,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,20 +23,19 @@
         </activity>
 
         <activity
-            android:name=".newslistdemo.NewsContentActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".newslistdemo.NewsContentActivity" />
 
         <activity
-            android:name=".newslistdemo.NewsListMainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".newslistdemo.NewsListMainActivity" />
 
         <activity
-            android:name=".ninegag.foldablelayout.FoldableMainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".ninegag.foldablelayout.FoldableMainActivity" />
 
         <activity
-            android:name=".ninegag.imageload.ImageLoadMainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".ninegag.imageload.ImageLoadMainActivity" />
+
+        <activity
+            android:name=".ninegag.fresco.FrescoMainActivity" />
 
     </application>
 

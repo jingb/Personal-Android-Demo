@@ -37,4 +37,11 @@
         android:text="imageLoadDemo"
         android:layout_below="@id/foldableLayoutDemo"/>
 
+    <Button
+        android:id="@+id/frescoDemo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="frescoDemo"
+        android:layout_below="@id/imageLoadDemo"/>
+
 </RelativeLayout>

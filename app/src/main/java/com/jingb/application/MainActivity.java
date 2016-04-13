@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.jingb.application.ninegag.foldablelayout.FoldableMainActivity;
 import com.jingb.application.newslistdemo.NewsListMainActivity;
+import com.jingb.application.ninegag.fresco.FrescoMainActivity;
 import com.jingb.application.ninegag.imageload.ImageLoadMainActivity;
 
 import java.util.Map;
@@ -41,6 +42,9 @@ public class MainActivity extends Activity {
 
     @Bind(R.id.imageLoadDemo)
     Button imageLoadDemo;
+
+    @Bind(R.id.frescoDemo)
+    Button frescoDemo;
 
     String lineSeperator = System.getProperty("line.separator");
 
@@ -83,6 +87,13 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 jumpToActivity(ImageLoadMainActivity.class);
+            }
+        });
+
+        frescoDemo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                jumpToActivity(FrescoMainActivity.class);
             }
         });
 
