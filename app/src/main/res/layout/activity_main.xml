@@ -44,4 +44,11 @@
         android:text="frescoDemo"
         android:layout_below="@id/imageLoadDemo"/>
 
+    <Button
+        android:id="@+id/floatView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="floatView"
+        android:layout_below="@id/frescoDemo"/>
+
 </RelativeLayout>

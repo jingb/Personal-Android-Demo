@@ -14,6 +14,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.gson.Gson;
 import com.jingb.application.App;
 import com.jingb.application.Jingb;
@@ -22,7 +23,7 @@ import com.jingb.application.ninegag.NineGagDatagram;
 import com.jingb.application.ninegag.NineGagImageDatagram;
 import com.jingb.application.ninegag.foldablelayout.ImageDatagramAdapter;
 import com.jingb.application.util.GsonRequest;
-import com.jingb.application.util.ImageCacheManager;
+import com.jingb.application.util.NetworkUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -57,8 +58,10 @@ public class ImageLoadMainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /** Fresco初始化 **/
+        Fresco.initialize(this);
         setContentView(R.layout.imageload_main);
-
+        /** ButterKnife初始化 ***/
         ButterKnife.bind(ImageLoadMainActivity.this);
 
         mAdapter = new ImageDatagramAdapter(this, R.layout.imageload_listview_item, mDatas = new ArrayList<>());
@@ -91,13 +94,12 @@ public class ImageLoadMainActivity extends Activity {
                 });
 
             }
-
+            /***
+             * 判断是否可以进行刷新操作,当且仅当第一行的内容在视图里(到了顶部)或者当前视图没有内容的时候,
+             * 才触发onRefreshBegin函数,否则会出现随便什么时候拖动屏幕下拉都触发该函数
+             */
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                /***
-                 * 判断是否可以进行刷新操作,当且仅当第一行的内容在视图里(到了顶部)或者当前视图没有内容的时候,
-                 * 才触发onRefreshBegin函数,否则会出现随便什么时候拖动屏幕下拉都触发该函数
-                 */
                 return PtrDefaultHandler.checkContentCanBePulledDown(frame, mListView, header);
             }
         });
@@ -157,9 +159,10 @@ public class ImageLoadMainActivity extends Activity {
             }
         }, mRetryPolicy);
 
-        if (ImageCacheManager.isNetworkAvailable(this)) {
+        if (NetworkUtils.isNetworkAvailable(this)) {
             requestQueue.add(request);
         } else {
+            url = "0:" + url;
             byte[] bytes = requestQueue.getCache().get(url) != null ?
                     requestQueue.getCache().get(url).data : null;
             if (bytes != null) {
@@ -173,7 +176,7 @@ public class ImageLoadMainActivity extends Activity {
                     Log.e(Jingb.TAG, e.getMessage());
                 }
             } else {
-                Log.e(Jingb.TAG, "eliza");
+                Log.e(Jingb.TAG, "could not get data from cache");
             }
         }
     }

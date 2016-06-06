@@ -2,14 +2,18 @@ package com.jingb.application;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -17,8 +21,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
-import com.jingb.application.ninegag.foldablelayout.FoldableMainActivity;
 import com.jingb.application.newslistdemo.NewsListMainActivity;
+import com.jingb.application.ninegag.foldablelayout.FoldableMainActivity;
 import com.jingb.application.ninegag.fresco.FrescoMainActivity;
 import com.jingb.application.ninegag.imageload.ImageLoadMainActivity;
 
@@ -46,13 +50,15 @@ public class MainActivity extends Activity {
     @Bind(R.id.frescoDemo)
     Button frescoDemo;
 
+    @Bind(R.id.floatView)
+    Button floatView;
+
     String lineSeperator = System.getProperty("line.separator");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //showAllSystemProperties();
 
         ButterKnife.bind(this);
@@ -96,6 +102,14 @@ public class MainActivity extends Activity {
                 jumpToActivity(FrescoMainActivity.class);
             }
         });
+
+        floatView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createFloatView();
+            }
+        });
+
 
 
     }
@@ -192,5 +206,45 @@ public class MainActivity extends Activity {
         for (Map.Entry<Object, Object> entry : set) {
             Log.i(tag, entry.getKey() + ": " + entry.getValue());
         }
+    }
+
+    private void createFloatView() {
+        Log.i(Jingb.TAG, "createFloatView");
+
+        Button btn_floatView = new Button(getApplicationContext());
+        btn_floatView.setText("悬浮窗");
+
+        WindowManager wm = (WindowManager) getApplicationContext().getSystemService(
+                Context.WINDOW_SERVICE);
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+
+        // 设置window type
+        params.type = WindowManager.LayoutParams.TYPE_PHONE;
+        //params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        /*
+         * 如果设置为params.type = WindowManager.LayoutParams.TYPE_PHONE; 那么优先级会降低一些,
+         * 即拉下通知栏不可见
+         */
+
+        params.format = PixelFormat.RGBA_8888; // 设置图片格式，效果为背景透明
+
+        // 设置Window flag
+//        params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+//                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        /*
+         * 下面的flags属性的效果形同“锁定”。 悬浮窗不可触摸，不接受任何事件,同时不影响后面的事件响应。
+         * wmParams.flags=LayoutParams.FLAG_NOT_TOUCH_MODAL |
+         * LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE;
+         */
+
+        params.gravity = Gravity.LEFT | Gravity.TOP;
+        params.x = 0;
+        params.y = 0;
+
+        // 设置悬浮窗的长得宽
+        params.width = 200;
+        params.height = 200;
+
+        wm.addView(btn_floatView, params);
     }
 }

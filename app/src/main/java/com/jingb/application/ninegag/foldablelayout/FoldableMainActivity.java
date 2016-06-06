@@ -40,7 +40,7 @@ public class FoldableMainActivity extends Activity {
 
     public void getImages() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        GsonRequest<NineGagDatagram> request = new GsonRequest<NineGagDatagram>(mUrl,
+        GsonRequest<NineGagDatagram> request = new GsonRequest<>(mUrl,
                 NineGagDatagram.class, new Response.Listener<NineGagDatagram>() {
             @Override
             public void onResponse(NineGagDatagram response) {

@@ -4,13 +4,18 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:gravity="center">
+    android:gravity="center"
+    android:orientation="vertical">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/simpleDraweeView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        fresco:viewAspectRatio="1.33"
         />
+
+    <!-- fresco:viewAspectRatio 以4:3的宽高比例显示 -->
+
     <!--fresco:placeholderImage="@drawable/loading"
         fresco:failureImage="@drawable/loading_error"-->
 

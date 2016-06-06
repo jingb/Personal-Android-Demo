@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.jingb.application.R;
 import com.jingb.application.ninegag.NineGagImageDatagram;
-import com.jingb.application.util.DensityUtils;
 import com.jingb.application.util.ImageCacheManager;
 
 /**
@@ -27,7 +26,7 @@ public class ImageDatagramAdapterOfFoldableLayoutDemo extends ImageDatagramAdapt
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         NineGagImageDatagram imageDatagram = getItem(position);
-        View view = LayoutInflater.from(getContext()).inflate(viewId, null);
+        View view = LayoutInflater.from(getContext()).inflate(mViewId, null);
 
         ImageView imageView = (ImageView) view.findViewById(R.id.imageItem);
 

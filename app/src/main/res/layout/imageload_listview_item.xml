@@ -12,7 +12,19 @@
         android:textSize="20sp"
         />
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/imageItemOfImageLoad"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:minHeight="200dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:scaleType="centerCrop"
+
+        />
+    <!--<ImageView
         android:id="@+id/imageItemOfImageLoad"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -22,6 +34,6 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:background="#c9c9c9"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"/>-->
 
 </LinearLayout>

@@ -46,7 +46,7 @@ public class ImageCacheManager {
 
     public static ImageLoader.ImageContainer loadImage(String requestUrl, ImageLoader.ImageListener imageListener,
                                                        int maxWidth, int maxHeigh, ImageView.ScaleType scaleType) {
-        if (isNetworkAvailable(mContext)) {
+        if (NetworkUtils.isNetworkAvailable(mContext)) {
             return mImageLoader.get(requestUrl, imageListener, maxWidth, maxHeigh, scaleType);
         } else {
             Bitmap bitmap = getDataFromDiskCache(requestUrl);
@@ -102,27 +102,6 @@ public class ImageCacheManager {
                 }
             }
         };
-    }
-
-    public static boolean isNetworkAvailable(Context context) {
-        try {
-            if (context == null) {
-                context = App.getContext();
-                //return false;
-            }
-            ConnectivityManager manger = (ConnectivityManager) context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo info = manger.getActiveNetworkInfo();
-            if (info != null) {
-                return info.isConnected();
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(Jingb.TAG, e.getMessage());
-            return false;
-        }
     }
 
     private static Bitmap getDataFromDiskCache(String url) {
