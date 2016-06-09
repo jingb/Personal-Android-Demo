@@ -53,6 +53,9 @@ public class MainActivity extends Activity {
     @Bind(R.id.floatView)
     Button floatView;
 
+    @Bind(R.id.PagerSlidingTabStrip)
+    Button pagerSlidingTabStrip;
+
     String lineSeperator = System.getProperty("line.separator");
 
     @Override
@@ -110,6 +113,12 @@ public class MainActivity extends Activity {
             }
         });
 
+        pagerSlidingTabStrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                jumpToActivity(com.jingb.application.ninegag.pager_sliding_tabstrip.MainActivity.class);
+            }
+        });
 
 
     }
@@ -180,7 +189,7 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 

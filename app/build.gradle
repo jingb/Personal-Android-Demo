@@ -33,4 +33,7 @@ dependencies {
     compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile 'in.srain.cube:cube-sdk:1.0.44@aar'
     compile 'com.facebook.fresco:fresco:0.9.0+'
+
+    //viewpager 上面的滑动指示器
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 }

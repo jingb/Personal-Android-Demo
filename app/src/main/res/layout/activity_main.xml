@@ -51,4 +51,11 @@
         android:text="floatView"
         android:layout_below="@id/frescoDemo"/>
 
+    <Button
+        android:id="@+id/PagerSlidingTabStrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PagerSlidingTabStrip"
+        android:layout_below="@id/floatView"/>
+
 </RelativeLayout>

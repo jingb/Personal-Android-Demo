@@ -1,6 +1,5 @@
 package com.jingb.application.ninegag.imageload;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.gson.Gson;
 import com.jingb.application.App;
+import com.jingb.application.BaseActivity;
 import com.jingb.application.Jingb;
 import com.jingb.application.R;
 import com.jingb.application.ninegag.NineGagDatagram;
@@ -40,7 +40,7 @@ import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
 
-public class ImageLoadMainActivity extends Activity {
+public class ImageLoadMainActivity extends BaseActivity {
 
     String mUrl = "http://infinigag.k3min.eu/hot";
 

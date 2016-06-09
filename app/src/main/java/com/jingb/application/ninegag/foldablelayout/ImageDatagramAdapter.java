@@ -2,19 +2,24 @@ package com.jingb.application.ninegag.foldablelayout;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
 import com.jingb.application.App;
+import com.jingb.application.Jingb;
 import com.jingb.application.R;
 import com.jingb.application.ninegag.NineGagImageDatagram;
 import com.jingb.application.util.ImageCacheManager;
@@ -38,10 +43,12 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
     Drawable mDefaultImageDrawable;
     Drawable mErrorImageDrawable;
 
+
     private List<NineGagImageDatagram> mImageDatagrams;
 
     private GenericDraweeHierarchyBuilder builder;
     GenericDraweeHierarchy hierarchy;
+    ImagePipeline imagePipeline;
 
     public ImageDatagramAdapter(Context context, int resource, List<NineGagImageDatagram> imageDatagrams) {
         super(context, resource, imageDatagrams);
@@ -50,7 +57,6 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
         if (mResource == null) {
             mResource = App.getContext().getResources();
         }
-        mDefaultImageDrawable = mResource.getDrawable(R.drawable.loading);
         mErrorImageDrawable = mResource.getDrawable(R.drawable.loading_error);
         mImageDatagrams = imageDatagrams;
         ImageCacheManager.init(getContext());
@@ -59,8 +65,9 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
         hierarchy = builder
             .setProgressBarImage(new ProgressBarDrawable())
             .setPlaceholderImage(mResource.getDrawable(R.drawable.loading))
-            .setFailureImage(App.getContext().getResources().getDrawable(R.drawable.loading_error))
+            .setFailureImage(mResource.getDrawable(R.drawable.loading_error))
             .build();
+        imagePipeline = Fresco.getImagePipeline();
     }
 
     public ImageDatagramAdapter(Context context, int resource, NineGagImageDatagram[] imageDatagrams) {
@@ -111,9 +118,19 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
             Holder holder = getHolder(convertView);
             NineGagImageDatagram imageDatagram = getItem(position);
             Uri uri = Uri.parse(imageDatagram.getImages().getSmall());
-            if (holder.image.getHierarchy() != null) {
+            //打印图片是否在内存或硬盘取
+            Jingb.recordPicSituation(imagePipeline, uri);
+            //holder.image.getHierarchy() 此值不会为空，if语句里永远不执行
+            if (holder.image.getHierarchy() == null) {
+                Log.e(Jingb.TAG, "set hierarchy");
                 holder.image.setHierarchy(hierarchy);
             }
+
+            mDefaultImageDrawable = new ColorDrawable(mResource.getColor(
+                    Jingb.COLORS[position % Jingb.COLORS.length]));
+            holder.image.getHierarchy().setProgressBarImage(new ProgressBarDrawable());
+            holder.image.getHierarchy().setPlaceholderImage(mDefaultImageDrawable);
+            holder.image.getHierarchy().setFailureImage(mErrorImageDrawable);
             holder.image.setImageURI(uri);
             holder.caption.setText(imageDatagram.getCaption());
         }
