@@ -23,6 +23,7 @@ public class MainActivity extends FragmentActivity {
 
     private JingbPagerAdapter mAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

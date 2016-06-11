@@ -22,7 +22,6 @@ import com.jingb.application.App;
 import com.jingb.application.Jingb;
 import com.jingb.application.R;
 import com.jingb.application.ninegag.NineGagImageDatagram;
-import com.jingb.application.util.ImageCacheManager;
 
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
         }
         mErrorImageDrawable = mResource.getDrawable(R.drawable.loading_error);
         mImageDatagrams = imageDatagrams;
-        ImageCacheManager.init(getContext());
+        //ImageCacheManager.init(getContext());
 
         builder = new GenericDraweeHierarchyBuilder(mResource);
         hierarchy = builder
@@ -119,7 +118,7 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
             NineGagImageDatagram imageDatagram = getItem(position);
             Uri uri = Uri.parse(imageDatagram.getImages().getSmall());
             //打印图片是否在内存或硬盘取
-            Jingb.recordPicSituation(imagePipeline, uri);
+            //Jingb.recordPicSituation(imagePipeline, uri);
             //holder.image.getHierarchy() 此值不会为空，if语句里永远不执行
             if (holder.image.getHierarchy() == null) {
                 Log.e(Jingb.TAG, "set hierarchy");

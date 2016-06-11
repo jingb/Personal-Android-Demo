@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    >
 
-    <in.srain.cube.views.ptr.PtrClassicFrameLayout
-        android:id="@+id/load_more_list_view_ptr_frame"
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/maintabs"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="48dip"
+        app:pstsShouldExpand="true"
+        app:pstsIndicatorColor="@color/mainColorStyle"
+        app:pstsIndicatorHeight="5dip"
+        />
 
-        <in.srain.cube.views.loadmore.LoadMoreListViewContainer
-            android:id="@+id/load_more_list_view_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mainpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/maintabs"
+        tools:context=".ninegag.imageload.ImageLoadMainActivity" />
 
-            <ListView
-                android:id="@+id/listview_of_imageload_main"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="5dp"
-                />
-
-        </in.srain.cube.views.loadmore.LoadMoreListViewContainer>
-    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+    <!--<FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />-->
 </RelativeLayout>

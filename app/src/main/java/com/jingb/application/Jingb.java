@@ -11,11 +11,16 @@ import com.facebook.imagepipeline.core.ImagePipeline;
  */
 public class Jingb {
     public static final String TAG = "jingb";
+    public static final String SECOND_TAG = "eliza";
     public static final int FAIL = -1;
     public static final int SUCCESS = 0;
 
     public static final int[] COLORS = {R.color.holo_blue_light, R.color.holo_green_light,
             R.color.holo_orange_light, R.color.holo_purple_light, R.color.holo_red_light};
+
+    public static final String[] CATEGORYS = {"hot", "trending", "fresh"};
+
+    public static final String CATEGORY = "category";
 
     /**
      * 在logcat打印出 图片是否从内存或者硬盘取的

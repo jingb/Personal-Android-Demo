@@ -12,8 +12,10 @@
         <item name="android:titleTextStyle">@style/ActionbarTitleTextStyle</item>
     </style>
 
-    <style name="ActionbarTitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+    <style name="ActionbarTitleTextStyle"
+        parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <!-- Base application theme. -->

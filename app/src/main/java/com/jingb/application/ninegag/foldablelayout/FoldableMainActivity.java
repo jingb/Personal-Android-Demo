@@ -9,7 +9,7 @@ import com.alexvasilkov.foldablelayout.FoldableListLayout;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
+import com.jingb.application.App;
 import com.jingb.application.Jingb;
 import com.jingb.application.R;
 import com.jingb.application.ninegag.NineGagDatagram;
@@ -39,7 +39,8 @@ public class FoldableMainActivity extends Activity {
     }
 
     public void getImages() {
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        RequestQueue requestQueue = App.getRequestQueue();
+        Log.i(Jingb.TAG, "request url: " + mUrl);
         GsonRequest<NineGagDatagram> request = new GsonRequest<>(mUrl,
                 NineGagDatagram.class, new Response.Listener<NineGagDatagram>() {
             @Override
@@ -51,7 +52,7 @@ public class FoldableMainActivity extends Activity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(FoldableMainActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FoldableMainActivity.this, "req data fail and req url: " + mUrl, Toast.LENGTH_SHORT).show();
                 Log.e(Jingb.TAG, "get data fail");
             }
         });

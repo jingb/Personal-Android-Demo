@@ -2,10 +2,8 @@ package com.jingb.application.util;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.jingb.application.Jingb;
 
 public class BitmapCache implements ImageLoader.ImageCache {
   
@@ -13,7 +11,7 @@ public class BitmapCache implements ImageLoader.ImageCache {
   
     public BitmapCache() {  
         int maxSize = (int)(Runtime.getRuntime().maxMemory() / 8);
-        Log.i(Jingb.TAG, "cache size: " + maxSize / 1024 / 1024 + "MB");
+        //Log.i(Jingb.TAG, "cache size: " + maxSize / 1024 / 1024 + "MB");
         mCache = new LruCache<String, Bitmap>(maxSize) {
             @Override  
             protected int sizeOf(String key, Bitmap bitmap) {  

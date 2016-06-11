@@ -1,6 +1,5 @@
 package com.jingb.application;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +9,6 @@ import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -26,14 +23,10 @@ import com.jingb.application.ninegag.foldablelayout.FoldableMainActivity;
 import com.jingb.application.ninegag.fresco.FrescoMainActivity;
 import com.jingb.application.ninegag.imageload.ImageLoadMainActivity;
 
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
     @Bind(R.id.showTheDpiOfYourScreen)
     Button showTheDpiOfYourScreen;
@@ -62,8 +55,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //showAllSystemProperties();
-
         ButterKnife.bind(this);
 
         showTheDpiOfYourScreen.setOnClickListener(
@@ -184,37 +175,6 @@ public class MainActivity extends Activity {
         mIntent.setComponent(comp);
         mIntent.setAction("android.intent.action.MAIN");
         startActivity(mIntent);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_item:
-                Toast.makeText(this, "add", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.remove_item:
-                Toast.makeText(this, "remove", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
-        }
-        return true;
-    }
-
-    public void showAllSystemProperties() {
-        Properties properties = System.getProperties();
-        String tag = "System.out";
-        Set<Map.Entry<Object, Object>> set = properties.entrySet();
-        for (Map.Entry<Object, Object> entry : set) {
-            Log.i(tag, entry.getKey() + ": " + entry.getValue());
-        }
     }
 
     private void createFloatView() {

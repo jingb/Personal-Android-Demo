@@ -22,10 +22,12 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
     compile 'com.jakewharton:butterknife:7.0.0'
-    compile 'com.android.support:appcompat-v7:23.2.0'
+    //compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.android.support:design:23.2.0'
-    compile 'com.android.support:support-v4:23.2.0'
+    //compile 'com.android.support:support-v4:23.2.0'
     compile 'com.alexvasilkov:foldable-layout:1.2.0'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.google.code.gson:gson:2.5'
@@ -33,7 +35,10 @@ dependencies {
     compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile 'in.srain.cube:cube-sdk:1.0.44@aar'
     compile 'com.facebook.fresco:fresco:0.9.0+'
-
     //viewpager 上面的滑动指示器
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    //listView动画
+    compile 'com.nhaarman.listviewanimations:lib-core:3.1.0@aar'
+    compile 'com.nhaarman.listviewanimations:lib-manipulation:3.1.0@aar'
+    compile 'com.nhaarman.listviewanimations:lib-core-slh:3.1.0@aar'
 }

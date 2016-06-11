@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 public class App extends Application {
     private static Context sContext;
@@ -21,6 +22,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = getApplicationContext();
+        /** Fresco初始化 **/
+        Fresco.initialize(sContext);
     }
 
     public static Context getContext() {

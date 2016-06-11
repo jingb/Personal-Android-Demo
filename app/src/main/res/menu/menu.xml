@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
     <item
         android:id="@+id/action_contact"
@@ -8,11 +11,25 @@
         android:title="@string/userLogin"/>
 
     <item
-        android:id="@+id/add_item"
+        android:id="@+id/alpha"
         android:showAsAction="never"
-        android:title="add"/>
+        android:title="Alpha"/>
+
     <item
-        android:id="@+id/remove_item"
+        android:title="Bottom Right"
+        android:id="@+id/bottom_right"
         android:showAsAction="never"
-        android:title="remove"/>
+        />
+
+    <item
+        android:title="Scale"
+        android:id="@+id/scale"
+        android:showAsAction="never"
+        />
+
+    <item
+        android:title="Google Cards"
+        android:id="@+id/cards"
+        android:showAsAction="never"
+        />
 </menu>
