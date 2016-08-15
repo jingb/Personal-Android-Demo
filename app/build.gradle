@@ -35,10 +35,25 @@ dependencies {
     compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile 'in.srain.cube:cube-sdk:1.0.44@aar'
     compile 'com.facebook.fresco:fresco:0.9.0+'
-    //viewpager 上面的滑动指示器
+    //indicator of the main viewpager
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     //listView动画
     compile 'com.nhaarman.listviewanimations:lib-core:3.1.0@aar'
     compile 'com.nhaarman.listviewanimations:lib-manipulation:3.1.0@aar'
     compile 'com.nhaarman.listviewanimations:lib-core-slh:3.1.0@aar'
+    //图片放大包
+    compile group: 'com.github.chrisbanes.photoview', name: 'library', version: '1.2.2'
+    //log
+    compile 'com.orhanobut:logger:1.15'
+    //event
+    compile 'org.greenrobot:eventbus:3.0.0'
+    //google progressBar
+    compile group: 'com.jpardogo.googleprogressbar', name: 'library', version: '1.2.0'
+    //indicator of the splash
+    compile 'com.liangfeizc:SlidePageIndicator:1.1.0@aar'
+    //daimajia animations
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.daimajia.easing:library:1.0.1@aar'
+    compile 'com.daimajia.androidanimations:library:1.1.3@aar'
+
 }

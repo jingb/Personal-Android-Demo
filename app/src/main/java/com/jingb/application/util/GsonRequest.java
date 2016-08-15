@@ -8,6 +8,9 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.jingb.application.ninegag.imageload.model.GagDatagram;
+import com.jingb.application.ninegag.imageload.model.GagdataJsonDeserializer;
 
 import java.io.UnsupportedEncodingException;
 
@@ -22,7 +25,13 @@ public class GsonRequest<T> extends Request<T> {
     public GsonRequest(int method, String url, Class<T> clazz, Response.Listener<T> listener,
                        Response.ErrorListener errorListener, RetryPolicy retryPolicy) {
         super(method, url, errorListener);
-        mGson = new Gson();
+        /**
+         * GagdataJsonDeserializer custom deserializer, maybe it will be passed to the method in the future
+         */
+        mGson = new GsonBuilder().registerTypeHierarchyAdapter(
+                GagDatagram.Media.class,
+                new GagdataJsonDeserializer()
+        ).create();
         mClass = clazz;
         mListener = listener;
         this.setRetryPolicy(retryPolicy);

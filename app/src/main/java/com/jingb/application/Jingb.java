@@ -22,6 +22,8 @@ public class Jingb {
 
     public static final String CATEGORY = "category";
 
+    public static final int COMMON_ANIMATION_DURATION = 2000;
+
     /**
      * 在logcat打印出 图片是否从内存或者硬盘取的
      */

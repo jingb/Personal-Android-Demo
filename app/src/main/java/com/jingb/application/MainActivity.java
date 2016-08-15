@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -21,12 +22,16 @@ import com.android.volley.toolbox.ImageRequest;
 import com.jingb.application.newslistdemo.NewsListMainActivity;
 import com.jingb.application.ninegag.foldablelayout.FoldableMainActivity;
 import com.jingb.application.ninegag.fresco.FrescoMainActivity;
-import com.jingb.application.ninegag.imageload.ImageLoadMainActivity;
+import com.jingb.application.ninegag.imageload.activity.BaseActivity;
+import com.jingb.application.ninegag.imageload.activity.ImageLoadMainActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity {
+
+    @Bind(R.id.tv_copyable)
+    TextView tv_copyable;
 
     @Bind(R.id.showTheDpiOfYourScreen)
     Button showTheDpiOfYourScreen;
@@ -110,7 +115,6 @@ public class MainActivity extends BaseActivity {
                 jumpToActivity(com.jingb.application.ninegag.pager_sliding_tabstrip.MainActivity.class);
             }
         });
-
 
     }
 

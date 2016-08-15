@@ -1,4 +1,4 @@
-package com.jingb.application;
+package com.jingb.application.ninegag.imageload.model;
 
 /**
  * Created by jingb on 16/6/10.

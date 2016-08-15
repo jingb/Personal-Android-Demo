@@ -3,18 +3,13 @@ package com.jingb.application.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
 import com.jingb.application.App;
 import com.jingb.application.Jingb;
 
@@ -25,20 +20,15 @@ public class ImageCacheManager {
     private static ImageLoader mImageLoader;
 
     public static void init(Context context) {
-        mContext = context;
-        mRequestQueue = App.getRequestQueue();
-        mImageLoader = new ImageLoader(mRequestQueue, new BitmapCache());
-        /*mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
-            @Override
-            public Bitmap getBitmap(String url) {
-                return null;
-            }
-
-            @Override
-            public void putBitmap(String url, Bitmap bitmap) {
-
-            }
-        });*/
+        if (mContext == null) {
+            mContext = context;
+        }
+        if (mRequestQueue == null) {
+            mRequestQueue = App.getRequestQueue();
+        }
+        if (mImageLoader == null) {
+            mImageLoader = new ImageLoader(mRequestQueue, new BitmapCache());
+        }
     }
 
     static int requestCount = 0;
@@ -77,7 +67,7 @@ public class ImageCacheManager {
 
                 if (response.getBitmap() != null) {
                     if (!isImmediate && defaultImageDrawable != null) {
-                        TransitionDrawable transitionDrawable = new TransitionDrawable(
+                        /*TransitionDrawable transitionDrawable = new TransitionDrawable(
                                 new Drawable[]{
                                         defaultImageDrawable,
                                         new BitmapDrawable(mContext.getResources(),
@@ -86,12 +76,12 @@ public class ImageCacheManager {
                         );
                         transitionDrawable.setCrossFadeEnabled(true);
                         imageView.setImageDrawable(transitionDrawable);
-                        transitionDrawable.startTransition(50);
+                        transitionDrawable.startTransition(50);*/
                     } else {
                         imageView.setImageBitmap(response.getBitmap());
                     }
                 } else if (defaultImageDrawable != null) {
-                    imageView.setImageDrawable(defaultImageDrawable);
+                    //imageView.setImageDrawable(defaultImageDrawable);
                 }
             }
 

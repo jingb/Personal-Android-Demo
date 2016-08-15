@@ -1,13 +1,18 @@
-package com.jingb.application.ninegag.imageload;
+package com.jingb.application.ninegag.imageload.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
 import com.jingb.application.Jingb;
+import com.jingb.application.ninegag.imageload.fragment.BaseFragment;
+import com.jingb.application.ninegag.imageload.fragment.ContentFragment;
+import com.jingb.application.ninegag.imageload.model.Category;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class JingbPagerAdapter extends FragmentPagerAdapter {
@@ -33,6 +38,15 @@ public class JingbPagerAdapter extends FragmentPagerAdapter {
         return fragments.get(category);
     }
 
+    public List<BaseFragment> getAllFragments() {
+        List<BaseFragment> result = new ArrayList<>();
+        Iterator<Map.Entry<String, BaseFragment>> it = fragments.entrySet().iterator();
+        while (it.hasNext()) {
+            result.add(it.next().getValue());
+        }
+        return result;
+    }
+
     @Override
     public CharSequence getPageTitle(int position) {
         return Jingb.CATEGORYS[position];
@@ -40,11 +54,10 @@ public class JingbPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        //ContentFragment fragment = ContentFragment.newInstance(mCategory);
         String category = Category.values()[position].getDisplayName();
         ContentFragment fragment = ContentFragment.newInstance(Category.values()[position]);
         if (!fragments.containsKey(category)) {
-            Log.i(Jingb.SECOND_TAG, "put into fragments: " + category);
+            //Logger.i(Jingb.SECOND_TAG, "put into fragments: " + category);
             fragments.put(category, fragment);
         }
         return fragment;

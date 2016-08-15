@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".App"
@@ -16,13 +17,30 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--<activity android:name=".TestActivity">-->
-        <activity android:name=".MainActivity">
+
+        <provider
+            android:name="com.jingb.application.ninegag.imageload.dao.GagDataProvider"
+            android:authorities="com.jingb.application.ninegag.imageload.dao.GagDataProvider"
+            android:exported="false" >
+            <grant-uri-permission android:pathPattern=".*" />
+        </provider>
+
+        <!--<activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>-->
+        <activity android:name=".ninegag.imageload.activity.SplashActivity"
+            android:theme="@style/CubeTheme.NoTitleFullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ninegag.imageload.activity.PhotoViewActivity" />
 
         <activity
             android:name=".newslistdemo.NewsContentActivity" />
@@ -34,12 +52,14 @@
             android:name=".ninegag.foldablelayout.FoldableMainActivity" />
 
         <activity
-            android:name=".ninegag.imageload.ImageLoadMainActivity" />
+            android:name=".ninegag.imageload.activity.ImageLoadMainActivity" />
 
         <activity
             android:name=".ninegag.fresco.FrescoMainActivity" />
 
         <activity android:name=".ninegag.pager_sliding_tabstrip.MainActivity" />
+
+        <activity android:name=".ninegag.imageload.activity.PlayMediaActivity" />
 
     </application>
 

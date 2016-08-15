@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/photoViewMain"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:gpb="http://schemas.android.com/apk/res-auto"
+    >
+
+    <!--<TextView
+        android:id="@+id/photoDesc"
+        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="dddddwwwewewesjkdfkjsfkjsfkjshfksjhfkjshfkshfkjshkfhskjfhskjfhksfhks"
+        android:layout_above="@id/largeImage"
+        android:textAlignment="center"
+        />-->
+
+    <Button
+        android:id="@+id/btn_playMedia"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:visibility="gone"
+        android:text="playMedia"
+        android:layout_centerHorizontal="true"
+        />
+
+    <uk.co.senab.photoview.PhotoView
+        android:id="@+id/largeImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:layout_below="@id/btn_playMedia"
+        />
+
+    <com.jpardogo.android.googleprogressbar.library.GoogleProgressBar
+        android:id="@+id/google_progress"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        gpb:type="folding_circles"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
+
+</RelativeLayout>

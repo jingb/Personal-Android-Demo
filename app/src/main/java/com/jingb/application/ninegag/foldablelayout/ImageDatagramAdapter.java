@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import com.jingb.application.App;
 import com.jingb.application.Jingb;
 import com.jingb.application.R;
 import com.jingb.application.ninegag.NineGagImageDatagram;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -121,7 +121,7 @@ public class ImageDatagramAdapter extends ArrayAdapter<NineGagImageDatagram> {
             //Jingb.recordPicSituation(imagePipeline, uri);
             //holder.image.getHierarchy() 此值不会为空，if语句里永远不执行
             if (holder.image.getHierarchy() == null) {
-                Log.e(Jingb.TAG, "set hierarchy");
+                Logger.e("set hierarchy");
                 holder.image.setHierarchy(hierarchy);
             }
 
