@@ -15,6 +15,8 @@ import com.jingb.application.ninegag.imageload.fragment.SlidePageFragment;
 import com.liangfeizc.slidepageindicator.CirclePageIndicator;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,9 +40,9 @@ public class SplashActivity extends BaseActivity
     };
 
     private static final String[] CONTENTSLIST = new String[] {
-            "不会打篮球的斯诺克运动员\n" +
-            "       不是好的程序猿",
-            "我是景b 想去新西兰放羊嗯"
+            "不会打篮球的程序猿\n" +
+            "       不是好的斯诺克运动员",
+            "我叫景b 想去新西兰放羊嗯"
     };
 
     @Override
@@ -71,20 +73,31 @@ public class SplashActivity extends BaseActivity
 
     @Override
     public void onPageSelected(int position) {
-        SlidePageFragment fragment = mSplashPagerAdapter.getFragmentsMap().get(position);
-        fragment.doAnimation();
+        Map<Integer, SlidePageFragment> fragmentMap = mSplashPagerAdapter.getFragmentsMap();
+        Iterator<Map.Entry<Integer, SlidePageFragment>> iterator = fragmentMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, SlidePageFragment> entry = iterator.next();
+            if (entry.getKey() == position) {
+                entry.getValue().setIsSelected(true);
+                entry.getValue().doAnimation();
+            } else {
+                entry.getValue().setIsSelected(false);
+                entry.getValue().hideHintMsg();
+            }
+        }
         /**
+         * the btn to enter the main Application
+         * just show in the last fragment
          * 最后一张图片显示进入主程序按钮，隐藏下方的指示按钮栏
-         * the btn to enter the main page just show in the last fragment
          */
         if (position == CONTENTSLIST.length - 1) {
             mEnterBtn.setVisibility(View.VISIBLE);
             YoYo.with(Techniques.FadeInUp).
                     duration(Jingb.COMMON_ANIMATION_DURATION).
                     playOn(mEnterBtn);
-            mPageIndicator.setVisibility(View.INVISIBLE);
+            mPageIndicator.setVisibility(View.GONE);
         } else {
-            mEnterBtn.setVisibility(View.INVISIBLE);
+            mEnterBtn.setVisibility(View.GONE);
             mPageIndicator.setVisibility(View.VISIBLE);
         }
     }

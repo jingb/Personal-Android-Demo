@@ -34,6 +34,13 @@
         android:scaleType="fitCenter"
         android:layout_below="@id/btn_playMedia"
         />
+    <!--<uk.co.senab.photoview.PhotoView
+        android:id="@+id/largeImage"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:scaleType="fitCenter"
+        android:layout_below="@id/btn_playMedia"
+        />-->
 
     <com.jpardogo.android.googleprogressbar.library.GoogleProgressBar
         android:id="@+id/google_progress"

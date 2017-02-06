@@ -2,6 +2,7 @@ package com.jingb.application.ninegag.imageload.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.jingb.application.R;
@@ -25,7 +26,10 @@ public class PlayMediaActivity extends Activity {
         setContentView(R.layout.playmedia_activity);
         ButterKnife.bind(PlayMediaActivity.this);
 
-        mWebView.getSettings().setJavaScriptEnabled(true);
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setBuiltInZoomControls(true);
+
         mWebView.loadUrl(getIntent().getStringExtra(MEDIAURL));
 
     }

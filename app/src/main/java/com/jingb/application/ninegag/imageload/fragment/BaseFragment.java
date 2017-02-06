@@ -24,4 +24,6 @@ public abstract class BaseFragment extends Fragment {
         mActivity = (BaseActivity) getActivity();
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
+    public abstract String getName();
 }

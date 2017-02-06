@@ -13,8 +13,12 @@ import com.jingb.application.ninegag.imageload.fragment.BaseFragment;
 import com.jingb.application.ninegag.imageload.fragment.ContentFragment;
 import com.jingb.application.ninegag.imageload.model.Category;
 import com.jingb.application.ninegag.imageload.model.ListViewAppearenceStyle;
+import com.orhanobut.logger.Logger;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,9 +27,6 @@ public class ImageLoadMainActivity extends BaseActivity implements ViewPager.OnP
 
     Category mCategory = Category.hot;
 
-    BaseFragment mContentFragment;
-
-    //viewpager和fragment配合的adapter
     private JingbPagerAdapter mAdapter;
 
     @Bind(R.id.maintabs)
@@ -34,16 +35,37 @@ public class ImageLoadMainActivity extends BaseActivity implements ViewPager.OnP
     @Bind(R.id.mainpager)
     ViewPager mPager;
 
+    private Map<String, BaseFragment> fragmentsMap;
+    private List<BaseFragment> fragments;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.imageload_main);
         ButterKnife.bind(ImageLoadMainActivity.this);
 
-        mAdapter = new JingbPagerAdapter(getSupportFragmentManager(), mCategory);
+        fragmentsMap = new HashMap<>();
+        fragments = new ArrayList<>();
+        for (int i = 0; i < Category.values().length; i++) {
+            Category category = Category.values()[i];
+            ContentFragment fragment = ContentFragment.newInstance(category);
+            if (!fragmentsMap.containsKey(category.getDisplayName())) {
+                fragmentsMap.put(category.getDisplayName(), fragment);
+            }
+            if (!fragments.contains(fragment)) {
+                fragments.add(fragment);
+            }
+        }
+
+        mAdapter = new JingbPagerAdapter(getSupportFragmentManager(), mCategory, getAllFragments());
         mPager.setAdapter(mAdapter);
         mTabs.setViewPager(mPager);
         mTabs.setOnPageChangeListener(this);
+
+    }
+
+    public List<BaseFragment> getAllFragments() {
+        return fragments;
     }
 
     @Override
@@ -55,20 +77,12 @@ public class ImageLoadMainActivity extends BaseActivity implements ViewPager.OnP
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        List<BaseFragment> fragments = mAdapter.getAllFragments();
-        //ContentFragment fragment = (ContentFragment) mAdapter.getFragmentByCategory(mCategory.getDisplayName());
         switch (item.getItemId()) {
-            case R.id.alpha:
-                setListviewApparenceStyleForAllFragments(fragments, ListViewAppearenceStyle.ALPHA);
-                return true;
             case R.id.bottom_right:
                 setListviewApparenceStyleForAllFragments(fragments, ListViewAppearenceStyle.BOTTOM_RIGHT);
                 return true;
             case R.id.scale:
                 setListviewApparenceStyleForAllFragments(fragments, ListViewAppearenceStyle.SCALE);
-                return true;
-            case R.id.cards:
-                setListviewApparenceStyleForAllFragments(fragments, ListViewAppearenceStyle.CARDS);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -77,13 +91,13 @@ public class ImageLoadMainActivity extends BaseActivity implements ViewPager.OnP
 
     private void setListviewApparenceStyleForAllFragments(List<BaseFragment> fragments, String style) {
         for (BaseFragment item: fragments) {
+            Logger.i(item.getName() + " fragment setListviewApparenceStyle!");
             ((ContentFragment) item).setListviewApparenceStyle(style);
         }
     }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        //Log.i(Jingb.SECOND_TAG, "onPageScrolled");
     }
 
     @Override
@@ -93,7 +107,6 @@ public class ImageLoadMainActivity extends BaseActivity implements ViewPager.OnP
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        //Log.i(Jingb.SECOND_TAG, "onPageScrollStateChanged");
     }
 
 }

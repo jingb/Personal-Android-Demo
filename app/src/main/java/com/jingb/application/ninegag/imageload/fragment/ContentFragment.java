@@ -3,23 +3,16 @@ package com.jingb.application.ninegag.imageload.fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.jingb.application.App;
 import com.jingb.application.Jingb;
 import com.jingb.application.R;
@@ -30,14 +23,13 @@ import com.jingb.application.ninegag.imageload.model.Category;
 import com.jingb.application.ninegag.imageload.model.GagDatagram;
 import com.jingb.application.ninegag.imageload.model.ListViewAppearenceStyle;
 import com.jingb.application.ninegag.imageload.model.NetApi;
-import com.jingb.application.util.GsonRequest;
 import com.jingb.application.util.NetworkUtils;
-import com.jingb.application.util.ToastUtils;
 import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.ScaleInAnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.SwingRightInAnimationAdapter;
+import com.orhanobut.logger.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -64,25 +56,22 @@ public class ContentFragment extends BaseFragment
 
     private GagDatagramHelper mDataHelper;
 
-    GagDatagrmAdapter mAdapter;
-    //动画相关的adapter
+    private GagDatagrmAdapter mAdapter;
     private AnimationAdapter mAnimAdapter;
 
-    PtrClassicFrameLayout mPtrFrame;
-    String mNextPage = "";
+    private PtrClassicFrameLayout mPtrFrame;
+//    private PtrFrameLayout mPtrFrame;
 
-    RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
-            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+    private String mNextPage = "";
 
-    String mCategory;
-
-    public static final int HOT = 1;
-    public static final int TRENDING = 2;
-    public static final int FRESH = 3;
+    public static final String CATEGORY = "category";
+    private String mCategoryStr;
+    private Category mCategory;
 
     public static ContentFragment newInstance(Category category) {
+        Logger.i(category.getDisplayName() + " fragment init!");
         Bundle args = new Bundle();
-        args.putString(Jingb.CATEGORY, category.getDisplayName());
+        args.putSerializable(CATEGORY, category);
         ContentFragment fragment = new ContentFragment();
         fragment.setArguments(args);
         return fragment;
@@ -95,27 +84,54 @@ public class ContentFragment extends BaseFragment
 
         ButterKnife.bind(this, view);
 
-        mCategory = getArguments().getString(Jingb.CATEGORY);
-        Log.e(Jingb.SECOND_TAG, "fragment onCreateView: " + mCategory);
-        mDataHelper = new GagDatagramHelper(App.getContext(), Category.getCategory(mCategory));
+        mCategory = (Category) getArguments().getSerializable(CATEGORY);
+        mCategoryStr = mCategory.getDisplayName();
+
+        mDataHelper = new GagDatagramHelper(App.getContext(), Category.getCategory(mCategoryStr));
 
         mAdapter = new GagDatagrmAdapter(getActivity(), mListView);
-        //包一层动画adapter，默认是从右下角滑进屏幕
         mAnimAdapter = new SwingBottomInAnimationAdapter(new SwingRightInAnimationAdapter(mAdapter));
         mAnimAdapter.setAbsListView(mListView);
         mListView.setAdapter(mAnimAdapter);
-        //响应点击单个item调到到大图
         mListView.setOnItemClickListener(this);
 
-        getLoaderManager().initLoader(Category.getCategory(mCategory).ordinal(), null, this);
-
-        asynGetData(String.format(NetApi.URL, mCategory, mNextPage),
-                App.getRequestQueue(), null);
+        /**
+         * initLoader
+         */
+        getLoaderManager().initLoader(Category.getCategory(mCategoryStr).ordinal(), null, this);
 
         handleDropDownListRefresh(view);
         handleListViewDropUpLoadMore(view);
 
+        /**
+         * autoload the first fragment
+         * @see
+         *     still have a bug when cooperate with JingbPagerAdapter
+         */
+        if (mCategory.ordinal() == 0 && Jingb.appStart) {
+            mPtrFrame.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mPtrFrame.autoRefresh(true);
+                    Jingb.appStart = false;
+                }
+            }, 100);
+        }
+        /*MaterialHeader materialHeader = new MaterialHeader(getContext());
+        int[] colors = getResources().getIntArray(R.array.google_colors);
+        materialHeader.setColorSchemeColors(colors);
+        materialHeader.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
+        materialHeader.setPadding(0, LocalDisplay.dp2px(15), 0, LocalDisplay.dp2px(10));
+        materialHeader.setPtrFrameLayout(mPtrFrame);
+
+        mPtrFrame.setHeaderView(materialHeader);
+        mPtrFrame.addPtrUIHandler(materialHeader);*/
         return view;
+    }
+
+    @Override
+    public String getName() {
+        return mCategoryStr;
     }
 
     @Override
@@ -127,8 +143,14 @@ public class ContentFragment extends BaseFragment
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.changeCursor(data);
         if (data != null && data.getCount() == 0) {
-            asynGetData(String.format(NetApi.URL, mCategory, mNextPage),
-                    App.getRequestQueue(), null);
+            NetworkUtils.gsonRequest(String.format(NetApi.URL, mCategoryStr, mNextPage),
+                GagDatagram.GagDatagramRequestData.class,
+                new Response.Listener<GagDatagram.GagDatagramRequestData>() {
+                    @Override
+                    public void onResponse(GagDatagram.GagDatagramRequestData response) {
+                        storeData(response);
+                    }
+                }, NetworkUtils.getDefaultErrorListener(Jingb.DEFAULT_NET_REQUEST_ERROR_MSG));
         }
     }
 
@@ -139,58 +161,51 @@ public class ContentFragment extends BaseFragment
 
 
     /****
+     * handle drop up loading more
      * 处理listview上拉加载更多
      */
     private void handleListViewDropUpLoadMore(View view) {
         final LoadMoreListViewContainer loadMoreListViewContainer = (LoadMoreListViewContainer) view.findViewById(R.id.load_more_list_view_container);
         loadMoreListViewContainer.useDefaultHeader();
-        // binding view and mData
+        // binding view and data
         loadMoreListViewContainer.setLoadMoreHandler(new LoadMoreHandler() {
             @Override
             public void onLoadMore(final LoadMoreContainer loadMoreContainer) {
-                asynGetData(String.format(NetApi.URL, mCategory, mNextPage), App.getRequestQueue(), new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        switch (msg.arg1) {
-                            case Jingb.SUCCESS:
+                NetworkUtils.gsonRequest(String.format(NetApi.URL, mCategoryStr, mNextPage),
+                        GagDatagram.GagDatagramRequestData.class,
+                        new Response.Listener<GagDatagram.GagDatagramRequestData>() {
+                            @Override
+                            public void onResponse(GagDatagram.GagDatagramRequestData response) {
+                                storeData(response);
                                 loadMoreContainer.loadMoreFinish(false, true);
-                                break;
-                            default:
-                                loadMoreContainer.loadMoreFinish(false, true);
-                                break;
-                        }
-                    }
-                });
+                            }
+                        },
+                        NetworkUtils.getDefaultErrorListener(Jingb.DEFAULT_NET_REQUEST_ERROR_MSG));
             }
         });
     }
 
     /**
+     * handle drop down refersh the content
      * 处理listview的下拉刷新
      */
     private void handleDropDownListRefresh(View view) {
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.load_more_list_view_ptr_frame);
+//        mPtrFrame = (PtrFrameLayout) view.findViewById(R.id.load_more_list_view_ptr_frame);
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-//                mDatas.clear();
                 mDataHelper.deleteAll();
-                asynGetData(String.format(NetApi.URL, mCategory, ""), App.getRequestQueue(), new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        switch (msg.arg1) {
-                            case Jingb.SUCCESS:
-                                mPtrFrame.refreshComplete();
-                                break;
-                            default:
-                                mPtrFrame.refreshComplete();
-                                break;
+                NetworkUtils.gsonRequest(String.format(NetApi.URL, mCategoryStr, ""),
+                    GagDatagram.GagDatagramRequestData.class,
+                    new Response.Listener<GagDatagram.GagDatagramRequestData>() {
+                        @Override
+                        public void onResponse(GagDatagram.GagDatagramRequestData response) {
+                            storeData(response);
+                            mPtrFrame.refreshComplete();
                         }
-                    }
-                });
+                    }, NetworkUtils.getDefaultErrorListener(Jingb.DEFAULT_NET_REQUEST_ERROR_MSG));
 
             }
 
@@ -206,60 +221,10 @@ public class ContentFragment extends BaseFragment
     }
 
 
-    public void asynGetData(String url, RequestQueue requestQueue, final Handler handler) {
-        //Logger.i("asynGetData url: " + url);
-        final Message msg = handler != null ? handler.obtainMessage() : null;
-
-        GsonRequest<GagDatagram.GagDatagramRequestData> request = new GsonRequest<>(url,
-                GagDatagram.GagDatagramRequestData.class, new Response.Listener<GagDatagram.GagDatagramRequestData>() {
-
-            final boolean isRefreshFromTop = ("".equals(mNextPage.trim()));
-            @Override
-            public void onResponse(GagDatagram.GagDatagramRequestData response) {
-                mNextPage = response.getPage();
-                ArrayList<GagDatagram> gagDatagrams = response.data;
-                if (isRefreshFromTop) {
-                    mDataHelper.deleteAll();
-                }
-                mDataHelper.bulkInsert(gagDatagrams);
-
-                if (handler != null) {
-                    msg.arg1 = Jingb.SUCCESS;
-                    handler.sendMessage(msg);
-                }
-            }
-
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                ToastUtils.showShort("get data fail");
-                if (handler != null) {
-                    msg.arg1 = Jingb.FAIL;
-                    handler.sendMessage(msg);
-                }
-            }
-        }, mRetryPolicy);
-
-        if (NetworkUtils.isNetworkAvailable(App.getContext())) {
-            requestQueue.add(request);
-        } else {
-            /*url = "0:" + url;
-            byte[] bytes = requestQueue.getCache().get(url) != null ?
-                    requestQueue.getCache().get(url).mData : null;
-            if (bytes != null) {
-                try {
-                    String str = new String(bytes, "utf-8");
-                    NineGagDatagram cacheData = new Gson().fromJson(str, NineGagDatagram.class);
-                    //mDatas.addPics(Arrays.asList(cacheData.getData()));
-                    mAdapter.notifyDataSetChanged();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                    Log.e(Jingb.TAG, e.getMessage());
-                }
-            } else {
-                Log.e(Jingb.TAG, "could not get mData from cache");
-            }*/
-        }
+    public void storeData(GagDatagram.GagDatagramRequestData response) {
+        mNextPage = response.getPage();
+        ArrayList<GagDatagram> gagDatagrams = response.data;
+        mDataHelper.bulkInsert(gagDatagrams);
     }
 
     public void setListviewApparenceStyle(String style) {
@@ -280,9 +245,6 @@ public class ContentFragment extends BaseFragment
                     changed = true;
                 }
                 break;
-            case ListViewAppearenceStyle.CARDS:
-                ToastUtils.showShort("not implemented!");
-                break;
             case ListViewAppearenceStyle.SCALE:
                 if (!(mAnimAdapter instanceof ScaleInAnimationAdapter)) {
                     mAnimAdapter = new ScaleInAnimationAdapter(mAdapter);
@@ -292,14 +254,13 @@ public class ContentFragment extends BaseFragment
         }
         if (changed) {
             mAnimAdapter.setAbsListView(mListView);
-            mListView.setAdapter(mAnimAdapter);
+            if (mListView != null) {
+                mListView.setAdapter(mAnimAdapter);
+            }
             mAnimAdapter.notifyDataSetChanged();
         }
     }
 
-    /**
-     * 响应跳到大图界面
-     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         GagDatagram item = mAdapter.getItem(position);

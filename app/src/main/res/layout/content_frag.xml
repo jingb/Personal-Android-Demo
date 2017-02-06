@@ -27,4 +27,29 @@
 
         </in.srain.cube.views.loadmore.LoadMoreListViewContainer>
     </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+
+    <!-- if you want to use another header, use PtrFrameLayout
+    instead of PtrClassicFrameLayout -->
+    <!--<in.srain.cube.views.ptr.PtrFrameLayout
+        android:id="@+id/load_more_list_view_ptr_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <in.srain.cube.views.loadmore.LoadMoreListViewContainer
+            android:id="@+id/load_more_list_view_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <ListView
+                android:id="@+id/listview_of_imageload_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="5dp"
+                android:choiceMode="singleChoice"
+                />
+
+        </in.srain.cube.views.loadmore.LoadMoreListViewContainer>
+    </in.srain.cube.views.ptr.PtrFrameLayout>-->
 </RelativeLayout>

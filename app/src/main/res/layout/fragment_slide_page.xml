@@ -21,6 +21,7 @@
         android:paddingEnd="10dp"
         android:textSize="20sp"
         android:text="Another option I thought of is to use the image in a FrameLayout, with match_parent in width and height as background... this stretches the image, but I think the result is not very good."
+        android:visibility="gone"
         />
 
 </RelativeLayout>

@@ -23,6 +23,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.jingb.application.Jingb;
 import com.jingb.application.R;
 import com.jingb.application.ninegag.imageload.model.GagDatagram;
+import com.jingb.application.util.BitmapUtils;
 import com.jingb.application.util.ImageCacheManager;
 import com.jingb.application.util.ToastUtils;
 import com.orhanobut.logger.Logger;
@@ -32,7 +33,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,6 +47,11 @@ public class PhotoViewActivity extends BaseActivity implements View.OnLongClickL
     public static final String PHOTODESC = "photoDesc";
     public static final String MEDIA = "media";
     public static final String MEDIAURL = "mediaUrl";
+
+    /**
+     * 大图超过此值就进行压缩,KB为单位
+     */
+    private static final int MAX_IMAGE_SIZE = 100;
 
     @Bind(R.id.largeImage)
     ImageView mImageView;
@@ -67,6 +72,10 @@ public class PhotoViewActivity extends BaseActivity implements View.OnLongClickL
     @Bind(R.id.photoViewMain)
     RelativeLayout mPhotoViewMain;
 
+    Drawable defaultImageDrawable;
+    Drawable errorImageDrawable;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,41 +85,19 @@ public class PhotoViewActivity extends BaseActivity implements View.OnLongClickL
         mAttacher = new PhotoViewAttacher(mImageView);
         mAttacher.setOnLongClickListener(this);
 
-        int num = new Random().nextInt(Jingb.COLORS.length);
-
-        /*final Drawable defaultImageDrawable = new ColorDrawable(getResources().getColor(
-                Jingb.COLORS[num % Jingb.COLORS.length]));*/
-        final Drawable defaultImageDrawable = new ColorDrawable(getResources().getColor(R.color.white));
-        final Drawable errorImageDrawable = getResources().getDrawable(R.drawable.loading_error);
-
-        //photoDesc.setText(getIntent().getStringExtra(PHOTODESC));
-
-        ImageCacheManager.init(this);
+        defaultImageDrawable = new ColorDrawable(getResources().getColor(R.color.white));
+        errorImageDrawable = getResources().getDrawable(R.drawable.loading_error);
+//        int num = new Random().nextInt(Jingb.COLORS.length);
+//        photoDesc.setText(getIntent().getStringExtra(PHOTODESC));
         ImageLoader.ImageListener listener = new ImageLoader.ImageListener() {
 
             @Override
             public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                if (response.getBitmap() != null) {
-                    mImageView.setImageBitmap(response.getBitmap());
-                    // If you later call mImageView.setImageDrawable/setImageBitmap/setImageResource/etc
-                    // then you just need to call
-                    mAttacher.update();
-                    mProgressBar.setVisibility(View.GONE);
-                    // display the play btn when the image is loaded fully
-                    mMedia = (GagDatagram.Media) getIntent().getSerializableExtra(PhotoViewActivity.MEDIA);
-                    if (mMedia.hasMedia) {
-                        btnPlayMedia.setVisibility(View.VISIBLE);
-                        btnPlayMedia.setOnClickListener(PhotoViewActivity.this);
-                    }
-                } else {
-//                    mImageView.setImageDrawable(defaultImageDrawable);
-                    mPhotoViewMain.setBackground(defaultImageDrawable);
-                }
+                updateView(response, isImmediate);
             }
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Logger.i("onErrorResponse invoked!");
                 mProgressBar.setVisibility(View.GONE);
                 mImageView.setImageDrawable(errorImageDrawable);
             }
@@ -118,6 +105,38 @@ public class PhotoViewActivity extends BaseActivity implements View.OnLongClickL
         mProgressBar.setVisibility(View.VISIBLE);
         ImageCacheManager.loadImage(getIntent().getStringExtra(IMAGE_URL), listener);
 
+        /*Drawable drawable = getResources().getDrawable(R.drawable.test);
+        mImageView.setImageBitmap(BitmapUtils.compress(BitmapUtils.drawableToBitmap(drawable), MAX_IMAGE_SIZE));*/
+        //Logger.i("MeasuredHeight: " + mImageView.getMeasuredHeight() + "  MeasuredWidth:" + mImageView.getMeasuredWidth());
+        //Logger.i("MeasuredHeightAndState: " + mImageView.getMeasuredHeightAndState() + "  MeasuredWidthAndState:" + mImageView.getMeasuredWidthAndState());
+        //Logger.i("Height: " + mImageView.getHeight() + "  Width:" + mImageView.getWidth());
+    }
+
+    public void updateView(ImageLoader.ImageContainer response, boolean isImmediate) {
+        if (response.getBitmap() != null) {
+            Bitmap result = BitmapUtils.compress(response.getBitmap(), MAX_IMAGE_SIZE);
+            if (result != null) {
+                mImageView.setImageBitmap(result);
+            } else {
+                ToastUtils.showShort("the bitmap is too large and can not be loaded!");
+            }
+            /***
+             * If you later call mImageView.setImageDrawable/setImageBitmap/setImageResource/etc
+             * then you just need to call
+             */
+            mAttacher.update();
+            mProgressBar.setVisibility(View.GONE);
+            /**
+             * display the play btn when the image is loaded fully
+             */
+            mMedia = (GagDatagram.Media) getIntent().getSerializableExtra(PhotoViewActivity.MEDIA);
+            if (mMedia.hasMedia) {
+                btnPlayMedia.setVisibility(View.VISIBLE);
+                btnPlayMedia.setOnClickListener(PhotoViewActivity.this);
+            }
+        } else {
+            mPhotoViewMain.setBackground(defaultImageDrawable);
+        }
     }
 
     public void handleLongClick() {

@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.jingb.application.ninegag.foldablelayout.FoldableMainActivity;
 import com.jingb.application.ninegag.fresco.FrescoMainActivity;
 import com.jingb.application.ninegag.imageload.activity.BaseActivity;
 import com.jingb.application.ninegag.imageload.activity.ImageLoadMainActivity;
+import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -66,8 +68,8 @@ public class MainActivity extends BaseActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //showTheDpiOfYourScreen();
-                        req();
+                        showTheDpiOfYourScreen();
+//                        req();
                     }
                 }
         );
@@ -153,12 +155,16 @@ public class MainActivity extends BaseActivity {
 
     private void showTheDpiOfYourScreen() {
         Resources res = getResources();
+        DisplayMetrics displayMetrics = res.getDisplayMetrics();
         String info = "dpi 等于widthPixels/widthInch " + lineSeperator
-                + "widthInch是手机屏幕的物理宽度,英寸为单位" + lineSeperator;
-        int widthPixels = res.getDisplayMetrics().widthPixels;
-        int heightPixels = res.getDisplayMetrics().heightPixels;
-        float xdpi = res.getDisplayMetrics().xdpi;
-        float ydpi = res.getDisplayMetrics().ydpi;
+                + "widthInch是手机屏幕的物理宽度,英寸为单位" + lineSeperator
+                + "displayMetrics.density: " + displayMetrics.density + lineSeperator
+                + "displayMetrics.densityDpi: " + displayMetrics.densityDpi + lineSeperator
+                + "displayMetrics.scaledDensity: " + displayMetrics.scaledDensity + lineSeperator;
+        int widthPixels = displayMetrics.widthPixels;
+        int heightPixels = displayMetrics.heightPixels;
+        float xdpi = displayMetrics.xdpi;
+        float ydpi = displayMetrics.ydpi;
         double widthInch = widthPixels / xdpi;
         double heighInch = heightPixels / ydpi;
         info += "the widthPixels is " + widthPixels + lineSeperator
@@ -169,6 +175,7 @@ public class MainActivity extends BaseActivity {
                 + " 屏幕物理高度为: " + heighInch + "英寸";
 
         Toast.makeText(this, info, Toast.LENGTH_LONG).show();
+        Logger.i(info);
     }
 
 

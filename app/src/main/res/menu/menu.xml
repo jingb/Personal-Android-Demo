@@ -11,11 +11,6 @@
         android:title="@string/userLogin"/>
 
     <item
-        android:id="@+id/alpha"
-        android:showAsAction="never"
-        android:title="Alpha"/>
-
-    <item
         android:title="Bottom Right"
         android:id="@+id/bottom_right"
         android:showAsAction="never"
@@ -27,9 +22,4 @@
         android:showAsAction="never"
         />
 
-    <item
-        android:title="Google Cards"
-        android:id="@+id/cards"
-        android:showAsAction="never"
-        />
 </menu>

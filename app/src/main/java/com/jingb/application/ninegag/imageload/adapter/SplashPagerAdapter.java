@@ -8,6 +8,7 @@ import com.jingb.application.ninegag.imageload.fragment.SlidePageFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,9 @@ public class SplashPagerAdapter extends FragmentStatePagerAdapter {
 
     /***
      * 是否从网络下载图片做引导页背景图
-     * are the background pictures from network, this field is left to entend in the future
+     *
+     * are the background pictures from network,
+     * this field is left to entend in the future
      */
     private boolean picFromNetWork = false;
 
@@ -37,13 +40,24 @@ public class SplashPagerAdapter extends FragmentStatePagerAdapter {
         return mFragmentsMap;
     }
 
+    public SlidePageFragment getFragment(int position) {
+        Iterator<Map.Entry<Integer, SlidePageFragment>> iterator = mFragmentsMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, SlidePageFragment> entry = iterator.next();
+            if (entry.getKey() == position) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
     @Override
     public Fragment getItem(int i) {
         SlidePageFragment fragment;
         if (picFromNetWork) {
-            fragment = SlidePageFragment.newInstance(true, picList.get(i));
+            fragment = SlidePageFragment.newInstance(true, picList.get(i), i);
         } else {
-            fragment = SlidePageFragment.newInstance(false, mContentList.get(i));
+            fragment = SlidePageFragment.newInstance(false, mContentList.get(i), i);
         }
         mFragmentsMap.put(i, fragment);
         return fragment;
@@ -59,7 +73,9 @@ public class SplashPagerAdapter extends FragmentStatePagerAdapter {
 
     /**
      * 启动的引导如果是图片则调用此方法把图片url传给Fragment
-     * if the pictures are from network and just invoke this method and pass the urls
+     *
+     * if the pictures are from network and
+     * just invoke this method and pass the urls
      */
     public void addPics(List<String> picList) {
         this.picList = picList;

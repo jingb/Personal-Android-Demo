@@ -25,6 +25,7 @@ import com.jingb.application.Jingb;
 import com.jingb.application.R;
 
 import butterknife.ButterKnife;
+import rx.Observer;
 
 public class FrescoMainActivity extends Activity {
 
@@ -74,6 +75,23 @@ public class FrescoMainActivity extends Activity {
                                     }
                                 })
                 .build();*/
+
+        Observer<String> observer = new Observer<String>() {
+            @Override
+            public void onCompleted() {
+                Log.i(Jingb.TAG, "Completed");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.i(Jingb.TAG, "Error");
+            }
+
+            @Override
+            public void onNext(String s) {
+                Log.i(Jingb.TAG, s);
+            }
+        };
 
     }
 

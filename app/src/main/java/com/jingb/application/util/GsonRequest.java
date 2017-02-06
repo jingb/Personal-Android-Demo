@@ -26,7 +26,8 @@ public class GsonRequest<T> extends Request<T> {
                        Response.ErrorListener errorListener, RetryPolicy retryPolicy) {
         super(method, url, errorListener);
         /**
-         * GagdataJsonDeserializer custom deserializer, maybe it will be passed to the method in the future
+         * GagdataJsonDeserializer custom deserializer,
+         * it will be passed to the method in the future
          */
         mGson = new GsonBuilder().registerTypeHierarchyAdapter(
                 GagDatagram.Media.class,

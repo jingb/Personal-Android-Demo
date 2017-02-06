@@ -10,6 +10,14 @@ import com.facebook.imagepipeline.core.ImagePipeline;
  * Created by jingb on 16/4/2.
  */
 public class Jingb {
+
+    /**
+     * sth done when the app
+     * come into the main page from the splash
+     * and will be invoked once
+     */
+    public static boolean appStart = true;
+
     public static final String TAG = "jingb";
     public static final String SECOND_TAG = "eliza";
     public static final int FAIL = -1;
@@ -20,9 +28,9 @@ public class Jingb {
 
     public static final String[] CATEGORYS = {"hot", "trending", "fresh"};
 
-    public static final String CATEGORY = "category";
-
     public static final int COMMON_ANIMATION_DURATION = 2000;
+
+    public static final String DEFAULT_NET_REQUEST_ERROR_MSG = "Bad network!Try it again later!";
 
     /**
      * 在logcat打印出 图片是否从内存或者硬盘取的

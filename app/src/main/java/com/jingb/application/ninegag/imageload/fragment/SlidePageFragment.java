@@ -12,9 +12,6 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.jingb.application.Jingb;
 import com.jingb.application.R;
-import com.orhanobut.logger.Logger;
-
-import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -22,14 +19,20 @@ import butterknife.ButterKnife;
 public class SlidePageFragment extends BaseFragment {
 
     private static final String DATA = "slidepagefragment.picurl";
+    private static final String POSITION = "position";
 
     private static boolean mPicFromNetWork;
 
-    public static SlidePageFragment newInstance(boolean picFromNetWork, @NonNull final String data) {
+    private int mPosition;
+
+    private boolean isSelected = false;
+
+    public static SlidePageFragment newInstance(boolean picFromNetWork, @NonNull final String data, int position) {
         mPicFromNetWork = picFromNetWork;
 
         Bundle arguments = new Bundle();
         arguments.putString(DATA, data);
+        arguments.putInt(POSITION, position);
 
         SlidePageFragment fragment = new SlidePageFragment();
         fragment.setArguments(arguments);
@@ -40,7 +43,7 @@ public class SlidePageFragment extends BaseFragment {
     @Bind(R.id.tv_introduction)
     TextView tv_introduction;
 
-    String mData;
+    String mHintMsg;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -53,29 +56,44 @@ public class SlidePageFragment extends BaseFragment {
         Bundle arguments = getArguments();
 
         if (arguments != null) {
-            mData = arguments.getString(DATA);
+            mHintMsg = arguments.getString(DATA);
+            mPosition = arguments.getInt(POSITION);
         }
-        if (!mPicFromNetWork) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(300);
-            } catch (InterruptedException e) {
-                Logger.e(e, e.getMessage());
-            }
-            doAnimation();
-            tv_introduction.setText(mData);
-        } else {
+        if (mPicFromNetWork) {
             /*SimpleDraweeView view = (SimpleDraweeView) rootView.findViewById(R.id.pic);
-            if (mData != null) {
-                view.setImageURI(Uri.parse(mData));
+            if (mHintMsg != null) {
+                view.setImageURI(Uri.parse(mHintMsg));
             }*/
+        } else {
+            tv_introduction.setText(mHintMsg);
+            if (0 == mPosition) {
+                setIsSelected(true);
+                doAnimation();
+            }
         }
         return rootView;
     }
 
+    @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
     public void doAnimation() {
-        YoYo.with(Techniques.FadeInRight).
+        if (isSelected) {
+            tv_introduction.setVisibility(View.VISIBLE);
+            YoYo.with(Techniques.FadeInRight).
                 duration(Jingb.COMMON_ANIMATION_DURATION).
                 playOn(tv_introduction);
+        }
+    }
+
+    public void hideHintMsg() {
+        tv_introduction.setVisibility(View.GONE);
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
 }

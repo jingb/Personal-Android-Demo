@@ -76,7 +76,6 @@ public class GagDatagrmAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         int position = cursor.getPosition();
-//        Logger.i("bindView invoked and position is: " + position);
 
         Holder holder = getHolder(view);
 

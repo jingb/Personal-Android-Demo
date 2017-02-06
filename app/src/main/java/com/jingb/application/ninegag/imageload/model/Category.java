@@ -1,6 +1,8 @@
 package com.jingb.application.ninegag.imageload.model;
 
-public enum Category {
+import java.io.Serializable;
+
+public enum Category implements Serializable {
     hot("hot"), trending("trending"), fresh("fresh");
     private String mDisplayName;
 
