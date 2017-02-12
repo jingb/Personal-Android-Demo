@@ -1,3 +1,22 @@
 # Personal-Android-Demo
+
+# latest update
+Cause I am focus on java backend development and the [app service api](https://github.com/k3min/infinigag) was no longer available, the app now was deprecated.
+
+# introduction
 I am a newbie now and it is just my personal practice demo.
-But I hope it will get over 100 stars and bring me a job opportunity in New Zealand one day.
+It's an unofficial app client of [9gag](http://9gag.com/). 
+Refer to [storm zhang's project](https://github.com/stormzhang/9GAG), and I reimplemented it with different open sources.
+![](https://raw.githubusercontent.com/jingb/Personal-Android-Demo/master/screenshots/2.jpg)
+![](https://raw.githubusercontent.com/jingb/Personal-Android-Demo/master/screenshots/1.jpg)
+
+# open source(**includes but not limit**)
+* [Volley](https://android.googlesource.com/platform/frameworks/volley)
+* [fresco](https://github.com/facebook/fresco)
+* [ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)
+* [photoView](https://github.com/chrisbanes/PhotoView)
+* [logger](https://github.com/orhanobut/logger)
+* [googleprogressbar](https://github.com/jpardogo/GoogleProgressBar)
+* [android-Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh)
+* [cube-sdk](https://github.com/liaohuqiu/cube-sdk)
+* [PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip)
