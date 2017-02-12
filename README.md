@@ -1,4 +1,4 @@
-# Personal-Android-Demo
+# Personal-Android-Demo(deprecated)
 
 # latest update
 Cause I am focus on java backend development and the [app service api](https://github.com/k3min/infinigag) was no longer available, the app now was deprecated.
