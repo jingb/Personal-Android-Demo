@@ -7,6 +7,8 @@ Cause I am focus on java backend development and the [app service api](https://g
 I am a newbie now and it is just my personal practice demo.
 It's an unofficial app client of [9gag](http://9gag.com/). 
 Refer to [storm zhang's project](https://github.com/stormzhang/9GAG), and I reimplemented it with different open sources.
+
+
 ![Splash page](https://raw.githubusercontent.com/jingb/Personal-Android-Demo/master/screenshots/1.png)
 ![Main page](https://raw.githubusercontent.com/jingb/Personal-Android-Demo/master/screenshots/2.png)
 
